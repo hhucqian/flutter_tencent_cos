@@ -66,7 +66,7 @@ class COSClientBase {
       "host"
     };
     for (String key in src.keys) {
-      if (validHeaders.contains(key)) {
+      if (validHeaders.contains(key) || key.toLowerCase().startsWith("x")) {
         if (key == "content-length" && src["content-length"] == "0") {
           continue;
         }
