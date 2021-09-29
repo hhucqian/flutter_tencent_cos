@@ -55,8 +55,24 @@ class COSClientBase {
 
   filterHeaders(Map<String, String?> src) {
     Map<String, String?> res = {};
-    res["host"] = src["host"];
-    res["accept-encoding"] = src["accept-encoding"];
+    const validHeaders = {
+      "cache-control",
+      "content-disposition",
+      "content-encoding",
+      "content-type",
+      "expires",
+      "content-md5",
+      "content-length",
+      "host"
+    };
+    for (String key in src.keys) {
+      if (validHeaders.contains(key)) {
+        if (key == "content-length" && src["content-length"] == "0") {
+          continue;
+        }
+        res[key] = src[key];
+      }
+    }
     return res;
   }
 
@@ -95,6 +111,7 @@ class COSClientBase {
 
     var req = await client.openUrl(
         method, Uri.parse("${_config.uri}$action$urlParams"));
+
     headers.forEach((key, value) {
       req.headers.add(key, value ?? "");
     });
